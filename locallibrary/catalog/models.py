@@ -27,7 +27,7 @@ class Book(models.Model):
 
     # Genre class has already been defined so we can specify the object above.
     genre = models.ManyToManyField(Genre, help_text='Select a genre for this book')
-    genre = models.ForeignKey(Language, help_text='Select a language for this book')
+    language = models.ForeignKey(Language, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.title
@@ -35,6 +35,11 @@ class Book(models.Model):
     def get_absolut_url(self):
          """Returns the url to access a detail record for this book."""
          return reverse('book-detail', args=[str(self.id)])
+
+    def display_genre(self):
+        return ', '.join(genre.name for genre in self.genre.all()[:3])
+
+    display_genre.short_description = 'Genre'
 
 
 class BookInstance(models.Model):
@@ -78,4 +83,5 @@ class Author(models.Model):
 
     def __str__(self):
         return f'{self.last_name},{self.first_name}'
+
 
